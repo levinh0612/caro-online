@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Quicksand:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: 'Quicksand', ui-rounded, system-ui, sans-serif;
+  --font-game: 'Fredoka', 'Baloo 2', ui-rounded, system-ui, sans-serif;
   --font-display: 'Baloo 2', 'Quicksand', ui-rounded, system-ui, sans-serif;
   --color-blush: #fff0f5;
   --color-heart: #ff5c8a;
@@ -23,6 +24,24 @@ body {
 }
 input { font-size: 16px; /* chặn iOS tự zoom khi focus */ -webkit-user-select: text; user-select: text; }
 button { touch-action: manipulation; }
+
+/* ---------- Lửa & Băng ---------- */
+.fi-bg {
+  color: #fff;
+  background:
+    radial-gradient(60% 45% at 8% 96%, rgba(255,110,50,.28), transparent 70%),
+    radial-gradient(60% 45% at 92% 96%, rgba(80,170,255,.28), transparent 70%),
+    linear-gradient(180deg, #1a1233, #2d1f4a);
+}
+.fi-glass { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(10px); }
+.fi-title {
+  font-family: var(--font-game); font-weight: 700; letter-spacing: .01em;
+  background: linear-gradient(90deg, #ffb04a, #ff7a2f 40%, #7fd8ff 60%, #6fd3ff);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(255,150,80,.35));
+}
+.fi-banner { animation: bannerPop .5s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes bannerPop { 0% { transform: scale(.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 /* ---------- animation ---------- */
 @keyframes pop { 0% { transform: scale(0) rotate(-20deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }

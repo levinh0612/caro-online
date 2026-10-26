@@ -2,6 +2,7 @@ import { createServer } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
 import { Server } from 'socket.io';
 import { ROWS, COLS, emptyBoard, checkWin } from './rules.js';
+import { attachFireIce } from './fireice.js';
 
 const PORT = process.env.PORT || 3001;
 const ORIGIN = process.env.CLIENT_ORIGIN || '*';
@@ -40,6 +41,7 @@ const httpServer = createServer((req, res) => {
   res.writeHead(200).end('caro server ok');
 });
 const io = new Server(httpServer, { cors: { origin: ORIGIN } });
+attachFireIce(io, { pinOk, ipLocked, noteFail, clientIp, maxPinFails: MAX_PIN_FAILS });
 
 const ROOM = 'LOVE';
 const SEATS = ['X', 'O'];

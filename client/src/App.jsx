@@ -3,6 +3,8 @@ import { io } from 'socket.io-client';
 import {
   Cat, Confetti as ConfettiIcon, EnvelopeSimple, Flag, Handshake, Heart, PaperPlaneTilt, Rabbit, SmileySad, WifiSlash,
 } from '@phosphor-icons/react';
+import { Ic, MenuButton, Screen } from './ui.jsx';
+import { getPlayerId, read, write } from './storage.js';
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
 const EMOJIS = ['❤️', '😘', '🥰', '😂', '😭', '😡', '👏'];
@@ -10,27 +12,6 @@ const SIDE = {
   X: { label: 'Thỏ Tim', Icon: Rabbit, color: '#ff5c8a', bg: 'bg-pink-200/70', card: 'bg-pink-100 border-heart shadow-pink-200', glyph: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
   O: { label: 'Mèo Sao', Icon: Cat, color: '#4fb0ff', bg: 'bg-sky-200/70', card: 'bg-sky-100 border-star shadow-sky-200', glyph: 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z' },
 };
-
-// icon Phosphor đi kèm chữ, mặc định cao bằng chữ
-function Ic({ icon: Icon, weight = 'duotone', className = '', ...rest }) {
-  return <Icon weight={weight} size="1.15em" className={`inline-block align-[-0.2em] ${className}`} {...rest} />;
-}
-
-const read = (k, d = '') => {
-  try { return localStorage.getItem(k) ?? d; } catch { return d; }
-};
-const write = (k, v) => {
-  try { localStorage.setItem(k, v); } catch { /* ignore */ }
-};
-
-function getPlayerId() {
-  let id = read('caro.playerId');
-  if (!id) {
-    id = crypto.randomUUID();
-    write('caro.playerId', id);
-  }
-  return id;
-}
 
 const HEART = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
 const STAR = 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z';
@@ -99,7 +80,7 @@ function Dots() {
   );
 }
 
-export default function App() {
+export default function App({ onExit }) {
   const playerId = useMemo(getPlayerId, []);
   const socketRef = useRef(null);
   const [pin, setPin] = useState(() => read('caro.pin'));
@@ -195,6 +176,7 @@ export default function App() {
     return (
       <Screen>
         <BackgroundHearts />
+        {onExit && <MenuButton onClick={onExit} />}
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6">
           <div className="mascot flex items-center gap-1 mb-3 drop-shadow">
             <Rabbit size={64} weight="duotone" color="#ff5c8a" />
@@ -245,6 +227,7 @@ export default function App() {
     return (
       <Screen>
         <BackgroundHearts />
+        {onExit && <MenuButton onClick={onExit} />}
         <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-5">
           <h1 className="font-display font-extrabold text-3xl text-heart text-center leading-tight">Chọn phe</h1>
           <p className="text-sm text-heart/70 font-semibold mb-4 text-center">Cả hai sẵn sàng là bắt đầu <Ic icon={Heart} weight="fill" /></p>
@@ -565,21 +548,5 @@ export default function App() {
         </span>
       ))}
     </Screen>
-  );
-}
-
-function Screen({ children }) {
-  return (
-    <div
-      className="relative flex flex-col overflow-hidden"
-      style={{
-        height: '100dvh',
-        paddingTop: 'env(safe-area-inset-top)',
-        paddingLeft: 'env(safe-area-inset-left)',
-        paddingRight: 'env(safe-area-inset-right)',
-      }}
-    >
-      {children}
-    </div>
   );
 }
