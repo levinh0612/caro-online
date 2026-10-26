@@ -5,7 +5,10 @@ import { ROWS, COLS, emptyBoard, checkWin } from './rules.js';
 import { attachFireIce } from './fireice.js';
 
 const PORT = process.env.PORT || 3001;
-const ORIGIN = process.env.CLIENT_ORIGIN || '*';
+// CLIENT_ORIGIN: một hoặc nhiều origin, ngăn cách bằng dấu phẩy
+const ORIGIN = process.env.CLIENT_ORIGIN
+  ? process.env.CLIENT_ORIGIN.split(',').map((s) => s.trim()).filter(Boolean)
+  : '*';
 const ROOM_PIN = process.env.ROOM_PIN;
 if (!ROOM_PIN) {
   console.error('Thiếu ROOM_PIN (đặt trong server/.env hoặc biến môi trường)');
