@@ -205,7 +205,7 @@ export default function App({ onExit }) {
             </button>
             {error && <p className="text-red-500 text-sm mt-3 text-center font-semibold">{error}</p>}
           </div>
-          <p className="text-[11px] text-heart/60 mt-4 text-center">5 quân liên tiếp, không bị chặn 2 đầu là thắng</p>
+          <p className="text-[11px] text-heart/60 mt-4 text-center">5 quân liên tiếp là thắng (chỉnh luật ở sảnh)</p>
         </div>
       </Screen>
     );
@@ -269,7 +269,24 @@ export default function App({ onExit }) {
           </div>
 
           {me && (
-            <div className="w-full max-w-sm mt-4 flex gap-2">
+            <button
+              onClick={() => emit('setRule', !game.blockRule)}
+              className="press w-full max-w-sm mt-4 rounded-2xl bg-white/90 border-2 border-pink-200 px-4 py-2.5 flex items-center justify-between gap-3 text-left"
+            >
+              <span>
+                <span className="block font-bold text-sm text-heart">Luật chặn 2 đầu</span>
+                <span className="block text-[11px] font-semibold text-heart/70">
+                  {game.blockRule ? 'Bật: 5 quân bị chặn cả 2 đầu không tính thắng' : 'Tắt: 5 quân liên tiếp là thắng'}
+                </span>
+              </span>
+              <span className={`shrink-0 w-11 h-6 rounded-full p-0.5 transition-colors ${game.blockRule ? 'bg-heart' : 'bg-pink-200'}`}>
+                <span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${game.blockRule ? 'translate-x-5' : ''}`} />
+              </span>
+            </button>
+          )}
+
+          {me && (
+            <div className="w-full max-w-sm mt-3 flex gap-2">
               <button
                 onClick={() => emit('ready', !ready[me])}
                 disabled={!bothSeated}

@@ -10,9 +10,14 @@ test('5 liên tiếp, hai đầu trống => thắng', () => {
   assert.equal(checkWin(b, 7, 5).length, 5);
 });
 
-test('5 liên tiếp bị chặn cả 2 đầu => không thắng', () => {
+test('5 liên tiếp bị chặn cả 2 đầu => thắng (mặc định không áp dụng luật chặn)', () => {
   const b = emptyBoard(); put(b, row(7, 3, 5), 'X'); put(b, [[7, 2], [7, 8]], 'O');
-  assert.equal(checkWin(b, 7, 5), null);
+  assert.ok(checkWin(b, 7, 5));
+});
+
+test('blockRule bật: 5 liên tiếp bị chặn cả 2 đầu => không thắng', () => {
+  const b = emptyBoard(); put(b, row(7, 3, 5), 'X'); put(b, [[7, 2], [7, 8]], 'O');
+  assert.equal(checkWin(b, 7, 5, { blockRule: true }), null);
 });
 
 test('5 liên tiếp bị chặn 1 đầu => thắng', () => {

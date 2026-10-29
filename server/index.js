@@ -57,6 +57,7 @@ const room = {
   ready: { X: false, O: false },
   score: { X: 0, O: 0 },
   firstTurn: 'X',
+  blockRule: process.env.BLOCK_RULE === '1', // luật chặn 2 đầu, chỉnh được ở sảnh
 };
 resetBoard(room);
 
@@ -76,6 +77,7 @@ function publicState() {
   return {
     phase: room.phase,
     ready: room.ready,
+    blockRule: room.blockRule,
     board: room.board,
     turn: room.turn,
     winner: room.winner,
@@ -172,6 +174,16 @@ io.on('connection', (socket) => {
     emit();
   });
 
+  // Phe nào cũng chỉnh được luật ở sảnh; đổi luật thì huỷ sẵn sàng để hai bên xác nhận lại
+  socket.on('setRule', (value) => {
+    if (!current || room.phase !== 'lobby') return;
+    const next = !!value;
+    if (next === room.blockRule) return;
+    room.blockRule = next;
+    room.ready = { X: false, O: false };
+    emit();
+  });
+
   socket.on('move', ({ row, col } = {}) => {
     if (!current || room.phase !== 'playing' || room.winner || room.draw) return;
     if (!bothOnline()) return;
@@ -182,7 +194,7 @@ io.on('connection', (socket) => {
     room.drawOffer = null;
     room.board[row][col] = current.symbol;
     room.lastMove = [row, col];
-    const line = checkWin(room.board, row, col);
+    const line = checkWin(room.board, row, col, { blockRule: room.blockRule });
     if (line) {
       room.winner = current.symbol;
       room.winLine = line;
